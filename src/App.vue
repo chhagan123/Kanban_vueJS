@@ -1,9 +1,12 @@
 <script setup>
-
+    import MainBoard from './components/MainBoard.vue';
 </script>
 
 <template>
-  <h1 class="underline font-bold">hellow Vue Im now explore youready for it </h1>
+       <div class="w-full h-full flex flex-col   ">
+        <MainBoard/>
+
+       </div>
 </template>
 
 
