@@ -4,7 +4,11 @@ import { ref } from 'vue';
 
 const Assignees = ref(["chhagan","Nandu","Rishabh"])
 
-const emit= defineEmits("click")
+const emit= defineEmits(["toggle"])
+
+function Togglemit () {
+    emit("toggle")
+}
 
 
 </script>
@@ -24,8 +28,9 @@ const emit= defineEmits("click")
         </div>
 
         <div class="flex justify-end gap-5 items-center ">
+            <button class="border" @click="Togglemit">AddTask</button>
             <button class="border w-[auto] h-[2rem]">Add Colunm</button>
-            <button class="border">undo</button>
+            <button  class="border">undo</button>
             <button class="border">redo</button>
             <button class="border">Mode</button>
 
