@@ -23,15 +23,16 @@ watch(
   },
   { deep: true }
 );
-const newColumn = ref("");
-function AddColum() {
-  if (!newColumn.value.trim()) return;
-  columns.value.push({
-    id: Date.now().toString(),
-    name: newColumn.value.trim(),
-  });
-  newColumn.value = "";
+
+
+// ricieve new colum 
+
+function addColumn (newColumn) {
+  columns.value.push(newColumn)
 }
+
+defineExpose({addColumn})
+
 </script>
 <template>
   <div class="flex gap-6 w-full h-auto mt-4 p-4">
@@ -58,16 +59,5 @@ function AddColum() {
       </button>
     </div>
   </div>
-  <div
-    v-if="showAddColunm"
-    class="flex flex-col justify-center items-center w-auto h-auto border"
-  >
-    <h1>Add Colum</h1>
-    <input
-      class="border p-2 rounded w-60"
-      placeholder="Enter column Name"
-      v-model="newColumn"
-    />
-    <button @click="AddColum">Submit</button>
-  </div>
+ 
 </template>

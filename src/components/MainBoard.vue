@@ -2,11 +2,13 @@
 import Toolbar from "./Toolbar.vue";
 import AddTask from "../taskmodel/AddTask.vue";
 import Column from "../TaskBoard/Column.vue";
+import AddColum from "../taskmodel/AddColum.vue";
 import { onMounted, ref, watch } from "vue";
 
 const ShowTask = ref(false);
 const activeColumn = ref(null); // 👈 track which column is adding task
 const showAddColunm = ref(false);
+const columnRef = ref(null);
 
 function maintoggle() {
   ShowTask.value = !ShowTask.value;
@@ -42,6 +44,13 @@ function handleaddTask(newTask) {
   tasks.value.push(newTask);
   ShowTask.value= false;
 }
+
+// handle Addcolum
+function handleAddColumn(newCol) {
+  columnRef.value.addColumn(newCol);
+  showAddColunm.value = false;
+}
+
 </script>
 
 <template>
@@ -50,6 +59,7 @@ function handleaddTask(newTask) {
     <Toolbar @togglecol="togglecol" />
 
     <Column
+       ref="columnRef"
       :tasks="tasks"
       :showAddColunm="showAddColunm"
       @openAddTask="
@@ -66,6 +76,9 @@ function handleaddTask(newTask) {
       @addTask="handleaddTask"
       @close="maintoggle"
     />
+    <AddColum v-if="showAddColunm"
+      @addColumn="handleAddColumn"
+      @close="togglecol"/>
   </div>
 </template>
 
