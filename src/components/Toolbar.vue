@@ -15,7 +15,7 @@ function togglecol() {
 
 <template>
   <div
-    class="flex flex-col sm:flex-row justify-between items-center bg-gray-50 shadow rounded-lg px-4 py-3 w-full gap-3 sm:gap-6"
+    class="flex flex-col sm:flex-row justify-between items-center bg-gray-50  shadow rounded-lg px-4 py-3 w-full gap-3 sm:gap-6"
   >
     <!-- Left Side: Search + Dropdown -->
     <div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto items-center">

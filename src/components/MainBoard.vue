@@ -50,10 +50,16 @@ watch(
 // Catch emitted task
 
 
+function updatecol(colId)  {
+          activeColumn.value = colId;
+          ShowTask.value = true;
+          console.log(ShowTask.value)
+        }
 
 function handleaddTask(newTask) {
   tasks.value.push(newTask);
   ShowTask.value= false;
+  console.log(ShowTask.value)
 }
 
 // handle Addcolum
@@ -63,6 +69,7 @@ function handleAddColumn(newCol) {
 }
 
 // handle edit task 
+
 
 function openeditTask(task) {
   selectedTask.value=task;
@@ -104,12 +111,9 @@ function deleteTask(task) {
        ref="columnRef"
       :tasks="tasks"
       :showAddColunm="showAddColunm"
-      @openAddTask="
-        (colId) => {
-          activeColumn = colId;
-          ShowTask = true;
-        }
-      "
+      @openAddTask="updatecol"
+
+      
        @updateTasks="updateTasks"
      @editTask="openeditTask"
       @delete="deleteTask"

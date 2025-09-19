@@ -27,6 +27,7 @@ function saveTask() {
         <!-- Title -->
         <input 
           v-model="task.title" 
+          required
           type="text" 
           placeholder="Title" 
           class="w-full p-2 border rounded" 

@@ -25,19 +25,19 @@ function deleteTask () {
 </script>
 
 <template>
-  <div class="p-4 bg-white rounded-lg shadow border">
+  <div @click="openedit" class="p-4 bg-white cursor-pointer rounded-lg shadow border">
     <!-- Top section with title and actions -->
     <div class="flex justify-between items-start">
       <h3 class="text-lg font-bold text-gray-800">{{ task.title }}</h3>
       <div class="flex gap-2">
-     
+      
         
         <!-- Edit -->
-        <button @click="openedit" class="p-1 text-purple-500 hover:text-purple-700">
+        <button @click.stop="openedit" class="p-1 text-purple-500 hover:text-purple-700">
           <Pencil class="w-5 h-5"/>
         </button>
         <!-- Delete -->
-        <button @click="deleteTask" class="p-1 text-red-500 hover:text-red-700">
+        <button @click.stop="deleteTask" class="p-1 text-red-500 hover:text-red-700">
           <Trash2 class="w-5 h-5"/>
         </button>
       </div>

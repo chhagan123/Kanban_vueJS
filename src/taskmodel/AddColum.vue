@@ -11,7 +11,7 @@ function submitColumn() {
     name: newColumn.value.trim(),
   });
   newColumn.value = "";
-  emit("close");
+  // emit("close");
 }
 </script>
 
