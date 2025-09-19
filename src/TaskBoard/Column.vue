@@ -1,12 +1,13 @@
 <script setup>
-import { onMounted, ref, watch, computed } from "vue";
+import { onMounted, ref, watch } from "vue";
 import Task from "./Task.vue";
+import draggable from "vuedraggable";
 
 const props = defineProps({
   showAddColunm: Boolean,
   tasks: Array,
-  searchTerm: String, // 👈 coming from parent (MainBoard)
-  searchAssine:String, // also coming from parent (MainBoard)
+  searchTerm: String, // from parent (MainBoard)
+  searchAssine: String, // from parent (MainBoard)
 });
 
 const emit = defineEmits(["openAddTask", "editTask", "delete", "deleteColumn"]);
@@ -15,15 +16,12 @@ const columns = ref([]);
 // 🔹 Filter tasks per column
 function getFilteredTasks(colId) {
   return props.tasks.filter((task) => {
-    // must belong to this column
     const matchesColumn = task.columnId === colId;
 
-    // filter by assignee (if set)
     const matchesAssignee = !props.searchAssine
       ? true
       : task.assignee?.toLowerCase() === props.searchAssine.toLowerCase();
 
-    // filter by search text (if set)
     const matchesSearch = !props.searchTerm
       ? true
       : task.title.toLowerCase().includes(props.searchTerm.toLowerCase());
@@ -32,6 +30,26 @@ function getFilteredTasks(colId) {
   });
 }
 
+// 🔹 Handle drag end
+function onDragEnd(evt) {
+  const { item, to } = evt;
+
+  // Find new column id (using data attribute)
+  const newColId = to.closest("[data-col-id]")?.dataset.colId;
+
+  if (newColId) {
+    // Find dragged task by data-task-id
+    const taskId = item.getAttribute("data-task-id");
+    const task = props.tasks.find((t) => t.id.toString() === taskId);
+
+    if (task) {
+      task.columnId = newColId; // update columnId after drop
+    }
+  }
+
+  // Save tasks state if you want persistence
+  localStorage.setItem("kanban-tasks", JSON.stringify(props.tasks));
+}
 
 onMounted(() => {
   const saved = localStorage.getItem("kanban-col");
@@ -47,7 +65,7 @@ onMounted(() => {
 
     defaults.forEach((def) => {
       if (!columns.value.some((c) => c.id === def.id)) {
-        columns.value.push(def); // ✅ add back missing default
+        columns.value.push(def);
       }
     });
   } else {
@@ -89,9 +107,9 @@ function deletecolum(column) {
       v-for="col in columns"
       :key="col.id"
       class="w-60 h-auto border rounded-lg p-2 flex flex-col flex-shrink-0"
+      :data-col-id="col.id"
     >
       <div class="flex border w-full mb-2 pb-2 justify-start gap-4 items-center">
-        <!-- Column name and filtered task count -->
         <h1 class="font-bold ml-2">{{ col.name }}</h1>
         <div
           class="w-6 h-6 rounded-full shadow-lg flex items-center justify-center bg-indigo-600"
@@ -101,7 +119,6 @@ function deletecolum(column) {
           </span>
         </div>
 
-        <!-- Delete button only for non-default columns -->
         <button
           v-if="!notDeletecol.includes(col.name)"
           class="border bg-red-500 text-white px-2 rounded hover:bg-red-600"
@@ -111,18 +128,24 @@ function deletecolum(column) {
         </button>
       </div>
 
-      <!-- Render filtered tasks for this column -->
-      <div class="flex flex-col gap-4 w-full h-full overflow-y-auto">
-        <Task
-          v-for="(t, index) in getFilteredTasks(col.id)"
-          :key="index"
-          :task="t"
-          @openedit="emit('editTask', $event)"
-          @deletetask="emit('delete', $event)"
-        />
-      </div>
+      <!-- 🔹 Draggable Tasks -->
+      <draggable
+        :list="getFilteredTasks(col.id)"
+        :group="{ name: 'tasks', pull: true, put: true }"
+        item-key="id"
+        class="flex flex-col gap-4 w-full h-full overflow-y-auto"
+        @end="onDragEnd"
+      >
+        <template #item="{ element }">
+          <Task
+            :task="element"
+            :data-task-id="element.id"
+            @openedit="emit('editTask', $event)"
+            @deletetask="emit('delete', $event)"
+          />
+        </template>
+      </draggable>
 
-      <!-- Add Task Button -->
       <button
         @click="emit('openAddTask', col.id)"
         class="mt-4 bg-indigo-600 text-white px-2 py-1 rounded text-sm hover:bg-indigo-700 w-auto"
