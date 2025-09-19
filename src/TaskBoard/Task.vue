@@ -9,10 +9,19 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(["openedit"])
+const emit = defineEmits(["openedit","deletetask"])
+
+// edit emit 
 function openedit() {
   emit("openedit",props.task)
 }
+
+// delete emit
+
+function deleteTask () {
+  emit("deletetask",props.task)
+}
+
 </script>
 
 <template>
@@ -28,7 +37,7 @@ function openedit() {
           <Pencil class="w-5 h-5"/>
         </button>
         <!-- Delete -->
-        <button class="p-1 text-red-500 hover:text-red-700">
+        <button @click="deleteTask" class="p-1 text-red-500 hover:text-red-700">
           <Trash2 class="w-5 h-5"/>
         </button>
       </div>

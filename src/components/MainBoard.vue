@@ -80,6 +80,19 @@ function handleUpdateTask(updateTask) {
 }
 
 
+
+// handleDelete Task 
+
+function deleteTask(task) {
+
+  if (confirm(`Are you sure you want to delete "${task.title}"?`)) {
+    tasks.value = tasks.value.filter(t => t.id !== task.id)
+  }
+
+
+}
+
+
 </script>
 
 <template>
@@ -99,6 +112,7 @@ function handleUpdateTask(updateTask) {
       "
        @updateTasks="updateTasks"
      @editTask="openeditTask"
+      @delete="deleteTask"
     />
 
     <AddTask
