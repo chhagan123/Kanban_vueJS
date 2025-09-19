@@ -1,14 +1,18 @@
-<script setup>
+ <script setup>
 import Toolbar from "./Toolbar.vue";
 import AddTask from "../taskmodel/AddTask.vue";
 import Column from "../TaskBoard/Column.vue";
 import AddColum from "../taskmodel/AddColum.vue";
+import EditTask from "../taskmodel/EditTask.vue";
 import { onMounted, ref, watch } from "vue";
 
 const ShowTask = ref(false);
 const activeColumn = ref(null); // 👈 track which column is adding task
 const showAddColunm = ref(false);
 const columnRef = ref(null);
+
+const showEdit = ref(false)
+const selectedTask = ref(null)
 
 function maintoggle() {
   ShowTask.value = !ShowTask.value;
@@ -19,6 +23,10 @@ function togglecol() {
 }
 
 const tasks = ref([]);
+function updateTasks(newTasks) {
+  tasks.value = [...newTasks]; // reassign so reactivity triggers
+}
+
 
 // onmounted task
 
@@ -40,6 +48,9 @@ watch(
 );
 
 // Catch emitted task
+
+
+
 function handleaddTask(newTask) {
   tasks.value.push(newTask);
   ShowTask.value= false;
@@ -50,6 +61,24 @@ function handleAddColumn(newCol) {
   columnRef.value.addColumn(newCol);
   showAddColunm.value = false;
 }
+
+// handle edit task 
+
+function openeditTask(task) {
+  selectedTask.value=task;
+  showEdit.value=true
+}
+
+// handleUpdate Task 
+
+function handleUpdateTask(updateTask) {
+  const index = tasks.value.findIndex(t => t.id === updateTask.id)
+  if(index !== -1){
+    tasks.value[index] = {...updateTask}
+  }
+  showEdit.value = false;
+}
+
 
 </script>
 
@@ -68,6 +97,8 @@ function handleAddColumn(newCol) {
           ShowTask = true;
         }
       "
+       @updateTasks="updateTasks"
+     @editTask="openeditTask"
     />
 
     <AddTask
@@ -79,6 +110,18 @@ function handleAddColumn(newCol) {
     <AddColum v-if="showAddColunm"
       @addColumn="handleAddColumn"
       @close="togglecol"/>
-  </div>
-</template>
 
+     <EditTask
+     v-if="showEdit"
+     v-model="showEdit"
+     :task="selectedTask"
+       @update-task="handleUpdateTask"
+     />
+
+  </div>
+</template> 
+
+ 
+
+
+  

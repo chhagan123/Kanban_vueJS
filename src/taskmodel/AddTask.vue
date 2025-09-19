@@ -4,9 +4,11 @@ import { ref } from "vue";
 const props = defineProps({
   columnId: {
     type: String,
-    required: true,
+    required: false,   // ✅ make it optional
+    default: null,
   },
 });
+
 
 const title = ref("");
 const description = ref("");
@@ -22,6 +24,7 @@ function close() {
 
 function AddTask() {
   const Task = {
+    id: Date.now(),
     title: title.value,
     description: description.value,
     Assignees: Assignees.value,

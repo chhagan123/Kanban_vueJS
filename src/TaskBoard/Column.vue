@@ -2,7 +2,7 @@
 import { onMounted, ref, watch } from "vue";
 import Task from "./Task.vue";
 const props = defineProps({ showAddColunm: Boolean, tasks: Array });
-const emit = defineEmits(["openAddTask"]);
+const emit = defineEmits(["openAddTask","editTask"]);
 const columns = ref([]);
 onMounted(() => {
   const saved = localStorage.getItem("kanban-col");
@@ -33,6 +33,8 @@ function addColumn (newColumn) {
 
 defineExpose({addColumn})
 
+
+
 </script>
 <template>
   <div class="flex gap-6 w-full h-auto mt-4 p-4">
@@ -48,6 +50,7 @@ defineExpose({addColumn})
           v-for="(t, index) in tasks.filter((task) => task.columnId === col.id)"
           :key="index"
           :task="t"
+          @openedit="emit('editTask', $event)" 
         />
       </div>
       <!-- Button to add task in this column -->

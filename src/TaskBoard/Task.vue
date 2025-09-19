@@ -1,20 +1,46 @@
 <script setup>
-import { ref } from 'vue';
+import { ref } from 'vue'
+import { Pencil, Trash2, Eye } from 'lucide-vue-next' // icon package
 
-defineProps({
+const props = defineProps({
   task: {
     type: Object,
     required: true
   }
 })
 
+const emit = defineEmits(["openedit"])
+function openedit() {
+  emit("openedit",props.task)
+}
 </script>
 
 <template>
- <div class="p-4 bg-gray-500 text-white rounded-lg shadow">
-    <h3 class="text-lg font-bold">{{ task.title }}</h3>
-    <p class="text-sm text-gray-300">{{ task.description }}</p>
-    <p class="text-sm mt-1">👤 {{ task.Assignees }}</p>
-    <p class="text-sm mt-1">📅 {{ task.date }}</p>
+  <div class="p-4 bg-white rounded-lg shadow border">
+    <!-- Top section with title and actions -->
+    <div class="flex justify-between items-start">
+      <h3 class="text-lg font-bold text-gray-800">{{ task.title }}</h3>
+      <div class="flex gap-2">
+     
+        
+        <!-- Edit -->
+        <button @click="openedit" class="p-1 text-purple-500 hover:text-purple-700">
+          <Pencil class="w-5 h-5"/>
+        </button>
+        <!-- Delete -->
+        <button class="p-1 text-red-500 hover:text-red-700">
+          <Trash2 class="w-5 h-5"/>
+        </button>
+      </div>
+    </div>
+
+    <!-- Description -->
+    <p class="text-sm text-gray-600 mt-1">{{ task.description }}</p>
+
+    <!-- Footer (assignee + date) -->
+    <div class="flex justify-between items-center mt-3 text-sm text-gray-500">
+      <p>👤 {{ task.Assignees }}</p>
+      <p>📅 {{ task.date }}</p>
+    </div>
   </div>
 </template>
