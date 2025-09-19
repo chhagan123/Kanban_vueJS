@@ -1,9 +1,23 @@
 <script setup>
 import { ref } from 'vue'
 
+const searchquery = ref("")
+const SearchQueryAssgnee = ref("")
+
+
 const Assignees = ref(["chhagan", "Nandu", "Rishabh"])
 
-const emit = defineEmits(["toggle", "togglecol"])
+const emit = defineEmits(["toggle", "togglecol","search","assignee"])
+
+// emit serchquery 
+function handlesearch () {
+  console.log(searchquery.value)
+  emit("search",searchquery.value)
+}
+function searchAssignee () {
+  console.log(SearchQueryAssgnee.value)
+  emit("assignee",SearchQueryAssgnee.value)
+}
 
 function TogglAddTaskemit() {
   emit("toggle")
@@ -22,6 +36,8 @@ function togglecol() {
       <!-- Search -->
       <div class="relative w-full sm:w-56">
         <input
+          v-model="searchquery"
+          @input="handlesearch"
           class="pl-3 pr-8 py-2 border rounded-lg text-sm w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
           placeholder="Search by title..."
         />
@@ -30,10 +46,12 @@ function togglecol() {
 
       <!-- Dropdown -->
       <select
+        v-model="SearchQueryAssgnee"
+        @change=" searchAssignee"
         class="border rounded-lg px-2 py-2 text-sm w-full sm:w-auto focus:outline-none focus:ring-2 focus:ring-blue-500"
       >
         <option disabled selected>Search Assignee</option>
-        <option v-for="person in Assignees" :key="person" :value="person">
+        <option  v-for="person in Assignees" :key="person" :value="person">
           {{ person }}
         </option>
       </select>

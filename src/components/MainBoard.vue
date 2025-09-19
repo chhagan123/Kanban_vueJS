@@ -10,6 +10,23 @@ const ShowTask = ref(false);
 const activeColumn = ref(null); // 👈 track which column is adding task
 const showAddColunm = ref(false);
 const columnRef = ref(null);
+const searchTerm = ref("")
+const searchAssine = ref("")
+
+
+// search by titile 
+function handlesearch(query) {
+   searchTerm.value = query.toLowerCase();
+  console.log(searchTerm.value)
+}
+
+// search by Assignee
+function AssigneSearch(query) {
+
+  searchAssine.value = query.toLowerCase()
+  console.log(searchAssine.value)
+
+}
 
 const showEdit = ref(false)
 const selectedTask = ref(null)
@@ -105,16 +122,16 @@ function deleteTask(task) {
 <template>
   <div class="flex flex-col justify-center items-center">
     <h1 class="mt-[4rem]">Welcome to Kanban Board</h1>
-    <Toolbar @togglecol="togglecol" />
+    <Toolbar @togglecol="togglecol" @search="handlesearch" @assignee="AssigneSearch"/>
 
     <Column
        ref="columnRef"
       :tasks="tasks"
       :showAddColunm="showAddColunm"
+      :searchTerm="searchTerm"
+      :searchAssine="searchAssine"
       @openAddTask="updatecol"
-
-      
-       @updateTasks="updateTasks"
+      @updateTasks="updateTasks"
      @editTask="openeditTask"
       @delete="deleteTask"
     />
