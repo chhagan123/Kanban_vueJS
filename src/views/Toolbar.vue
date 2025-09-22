@@ -32,9 +32,7 @@ function searchAssignee() {
   emit("assignee", SearchQueryAssgnee.value);
 }
 
-function TogglAddTaskemit() {
-  emit("toggle");
-}
+
 function togglecol() {
   emit("togglecol");
 }
@@ -108,12 +106,12 @@ function togglecol() {
       </button>
 
       <!-- Undo -->
-      <UndoRedo label="⟲ Undo" :theme="theme"/>
+      <UndoRedo label="⟲ Undo" :theme="theme" />
       <!--Redo-->
-      <UndoRedo label="⟳ Redo" :theme="theme"/>
+      <UndoRedo label="⟳ Redo" :theme="theme" />
 
-            <!-- Mode -->
-            <button
+      <!-- Mode -->
+      <button
         @click="props.onToggleTheme()"
         class="px-4 py-2 rounded-lg text-sm font-medium w-full sm:w-auto transition-colors duration-300"
         :class="
@@ -124,7 +122,6 @@ function togglecol() {
       >
         {{ props.theme ? "☀️" : "🌙" }}
       </button>
-
     </div>
   </div>
 </template>

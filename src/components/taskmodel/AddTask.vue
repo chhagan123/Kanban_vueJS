@@ -1,4 +1,3 @@
-
 <script setup>
 import { ref } from "vue";
 
@@ -44,30 +43,51 @@ function AddTask() {
       <h2 class="text-xl font-bold mb-4">Add Task</h2>
       <!-- Use a form element and handle the submit event -->
       <form @submit.prevent="AddTask">
-        <input v-model="title" type="text" placeholder="Enter Title"
-          class="border w-full p-2 rounded mb-3" required />
+        <input
+          v-model="title"
+          type="text"
+          placeholder="Enter Title"
+          class="border w-full p-2 rounded mb-3"
+          required
+        />
 
-        <textarea v-model="description" placeholder="Enter Description"
-          class="border w-full p-2 rounded mb-3"></textarea>
+        <textarea
+          v-model="description"
+          placeholder="Enter Description"
+          class="border w-full p-2 rounded mb-3"
+        ></textarea>
 
-        <select v-model="Assignees" class="border w-full p-2 rounded mb-3" required>
+        <select
+          v-model="Assignees"
+          class="border w-full p-2 rounded mb-3"
+          required
+        >
           <option disabled value="">Select Assignee</option>
           <option v-for="(a, index) in Assignee" :key="index" :value="a">
             {{ a }}
           </option>
         </select>
 
-        <input v-model="date" type="date"
-          class="border w-full p-2 rounded mb-4" required/>
+        <input
+          v-model="date"
+          type="date"
+          class="border w-full p-2 rounded mb-4"
+          required
+        />
 
         <div class="flex justify-end gap-3">
-          <button type="button" @click="close"
-            class="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400">
+          <button
+            type="button"
+            @click="close"
+            class="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400"
+          >
             Cancel
           </button>
           <!-- The button is now type="submit" to trigger form validation -->
-          <button type="submit"
-            class="px-4 py-2 rounded bg-green-500 text-white hover:bg-green-600">
+          <button
+            type="submit"
+            class="px-4 py-2 rounded bg-green-500 text-white hover:bg-green-600"
+          >
             Add Task
           </button>
         </div>

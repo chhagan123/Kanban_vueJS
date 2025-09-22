@@ -1,159 +1,144 @@
 <script setup>
-import Toolbar from "./Toolbar.vue";
+import Toolbar from "./Toolbar.vue"
 import AddTask from "../components/taskmodel/AddTask.vue"
-import AddColum from "../components/taskmodel/AddColum.vue"
-import EditTask from  "../components/taskmodel/EditTask.vue"
-import Column from "../components/TaskBoard/Column.vue";
-import { onMounted, ref, watch } from "vue";
+import AddColumn from "../components/taskmodel/AddColum.vue"
+import EditTask from "../components/taskmodel/EditTask.vue"
+import Column from "../components/TaskBoard/Column.vue"
+import { onMounted, ref, watch } from "vue"
 
-const ShowTask = ref(false);
-const activeColumn = ref(null); // 👈 track which column is adding task
-const showAddColunm = ref(false);
-const columnRef = ref(null);
-const searchTerm = ref("");
-const searchAssine = ref("");
+// State
+const showTask = ref(false)
+const activeColumnId = ref(null)
+const showAddColumn = ref(false)
+const columnRef = ref(null)
+const searchTerm = ref("")
+const searchAssignee = ref("")
+const showEdit = ref(false)
+const selectedTask = ref(null)
+const tasks = ref([])
+const theme = ref(true)
 
-// undo ref
-
-const history = ref([]);
 
 
-/// change theme by toggling
-const theme = ref(true);
+// -------------------- Functions --------------------
 
-function changeTheme() {
-  theme.value = !theme.value;
+// Theme toggle
+function toggleTheme() {
+  theme.value = !theme.value
 }
 
-// search by titile
-function handlesearch(query) {
-  searchTerm.value = query.toLowerCase();
-  // console.log(searchTerm.value);
+// Search
+function handleSearch(query) {
+  searchTerm.value = query.toLowerCase()
 }
 
-// search by Assignee
-function AssigneSearch(query) {
-  searchAssine.value = query.toLowerCase();
-  console.log(searchAssine.value);
+function handleAssigneeSearch(query) {
+  searchAssignee.value = query.toLowerCase()
 }
 
-const showEdit = ref(false);
-const selectedTask = ref(null);
-
-function maintoggle() {
-  ShowTask.value = !ShowTask.value;
+// Toggle modals
+function toggleTaskModal() {
+  showTask.value = !showTask.value
 }
 
-function togglecol() {
-  showAddColunm.value = !showAddColunm.value;
+function toggleColumnModal() {
+  showAddColumn.value = !showAddColumn.value
 }
 
-const tasks = ref([]);
+// Task updates
 function updateTasks(newTasks) {
-  tasks.value = [...newTasks]; // reassign so reactivity triggers
+  tasks.value = [...newTasks] // trigger reactivity
 }
 
-// onmounted task
+function openAddTask(columnId) {
+  activeColumnId.value = columnId
+  showTask.value = true
+}
 
-onMounted(() => {
-  const saved = localStorage.getItem("Kanban-task");
-  if (saved) {
-    tasks.value = JSON.parse(saved);
+function handleAddTask(newTask) {
+  tasks.value.push(newTask)
+  showTask.value = false
+}
+
+function handleEditTask(task) {
+  selectedTask.value = task
+  showEdit.value = true
+}
+
+function handleUpdateTask(updatedTask) {
+  const index = tasks.value.findIndex((t) => t.id === updatedTask.id)
+  if (index !== -1) {
+    tasks.value[index] = { ...updatedTask }
   }
-});
+  showEdit.value = false
+}
 
-// watch if task added to localsorage to the set
+function handleDeleteTask(task) {
+  if (confirm(`Are you sure you want to delete "${task.title}"?`)) {
+    tasks.value = tasks.value.filter((t) => t.id !== task.id)
+  }
+}
+
+// Column updates
+function handleAddColumn(newCol) {
+  columnRef.value.addColumn(newCol)
+  showAddColumn.value = false
+}
+
+// -------------------- Lifecycle --------------------
+onMounted(() => {
+  const saved = localStorage.getItem("Kanban-task")
+  if (saved) {
+    tasks.value = JSON.parse(saved)
+  }
+})
 
 watch(
   tasks,
-  (newTask) => {
-    localStorage.setItem("Kanban-task", JSON.stringify(newTask));
+  (newTasks) => {
+    localStorage.setItem("Kanban-task", JSON.stringify(newTasks))
   },
   { deep: true }
-);
-
-// Catch emitted task
-
-function updatecol(colId) {
-  activeColumn.value = colId;
-  ShowTask.value = true;
-  // console.log(ShowTask.value);
-}
-
-function handleaddTask(newTask) {
-  // history.value.push(newTask)
-  tasks.value.push(newTask);
-  ShowTask.value = false;
-  // console.log(ShowTask.value);
-}
-
-// handle Addcolum
-function handleAddColumn(newCol) {
-  columnRef.value.addColumn(newCol);
-  showAddColunm.value = false;
-}
-
-// handle edit task
-
-function openeditTask(task) {
-  selectedTask.value = task;
-  showEdit.value = true;
-}
-
-// handleUpdate Task
-
-function handleUpdateTask(updateTask) {
-  const index = tasks.value.findIndex((t) => t.id === updateTask.id);
-  if (index !== -1) {
-    tasks.value[index] = { ...updateTask };
-  }
-  showEdit.value = false;
-}
-
-// handleDelete Task
-
-function deleteTask(task) {
-  if (confirm(`Are you sure you want to delete "${task.title}"?`)) {
-    tasks.value = tasks.value.filter((t) => t.id !== task.id);
-  }
-}
+)
 </script>
 
 <template>
   <div class="flex flex-col justify-center items-center">
     <h1 class="mt-[4rem]">Welcome to Kanban Board</h1>
+
     <Toolbar
-      @togglecol="togglecol"
-      @search="handlesearch"
-      @assignee="AssigneSearch"
-      @theme="changeTheme"
+      @togglecol="toggleColumnModal"
+      @search="handleSearch"
+      @assignee="handleAssigneeSearch"
+      @theme="toggleTheme"
       :theme="theme"
-      :onToggleTheme="changeTheme"
+      :onToggleTheme="toggleTheme"
     />
 
     <Column
       ref="columnRef"
       :tasks="tasks"
-      :showAddColunm="showAddColunm"
+      :showAddColunm="showAddColumn"
       :searchTerm="searchTerm"
       :theme="theme"
-      :searchAssine="searchAssine"
-      @openAddTask="updatecol"
+      :searchAssine="searchAssignee"
+      @openAddTask="openAddTask"
       @updateTasks="updateTasks"
-      @editTask="openeditTask"
-      @delete="deleteTask"
+      @editTask="handleEditTask"
+      @delete="handleDeleteTask"
     />
 
     <AddTask
-      v-if="ShowTask"
-      :column-id="activeColumn"
-      @addTask="handleaddTask"
-      @close="maintoggle"
+      v-if="showTask"
+      :column-id="activeColumnId"
+      @addTask="handleAddTask"
+      @close="toggleTaskModal"
     />
-    <AddColum
-      v-if="showAddColunm"
+
+    <AddColumn
+      v-if="showAddColumn"
       @addColumn="handleAddColumn"
-      @close="togglecol"
+      @close="toggleColumnModal"
     />
 
     <EditTask
