@@ -1,4 +1,6 @@
 <script setup>
+import UndoRedo from "../components/UndoredoButton/UndoRedo.vue";
+
 import { ref } from "vue";
 
 const searchquery = ref("");
@@ -18,15 +20,9 @@ const emit = defineEmits([
 
 const props = defineProps({
   theme: Boolean,
-  onToggleTheme:Function
-   // true = light, false = dark
+  onToggleTheme: Function,
+  // true = light, false = dark
 });
-
-// function  changeTheme() {
-//   props.onToggleTheme()
-// }
-
-
 
 // emit search query
 function handlesearch() {
@@ -112,33 +108,12 @@ function togglecol() {
       </button>
 
       <!-- Undo -->
-      <button
-        @click="emit('undo')"
-        class="px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-1 w-full sm:w-auto justify-center transition-colors duration-300"
-        :class="
-          props.theme
-            ? 'border border-gray-300 hover:bg-gray-100 text-gray-800'
-            : 'border border-gray-600 hover:bg-gray-700 text-gray-100'
-        "
-      >
-        ⟲ Undo
-      </button>
+      <UndoRedo label="⟲ Undo" :theme="theme"/>
+      <!--Redo-->
+      <UndoRedo label="⟳ Redo" :theme="theme"/>
 
-      <!-- Redo -->
-      <button
-        @click="emit('redo')"
-        class="px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-1 w-full sm:w-auto justify-center transition-colors duration-300"
-        :class="
-          props.theme
-            ? 'border border-gray-300 hover:bg-gray-100 text-gray-800'
-            : 'border border-gray-600 hover:bg-gray-700 text-gray-100'
-        "
-      >
-        ⟳ Redo
-      </button>
-
-      <!-- Mode -->
-      <button
+            <!-- Mode -->
+            <button
         @click="props.onToggleTheme()"
         class="px-4 py-2 rounded-lg text-sm font-medium w-full sm:w-auto transition-colors duration-300"
         :class="
@@ -149,6 +124,7 @@ function togglecol() {
       >
         {{ props.theme ? "☀️" : "🌙" }}
       </button>
+
     </div>
   </div>
 </template>
