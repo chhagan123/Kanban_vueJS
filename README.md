@@ -2,7 +2,7 @@
 
 ## Description
 
-This project is a **Kanban Board** built using **Vue.js** and **Tailwind CSS**. It provides a dynamic, interactive task management system with a clean and responsive UI.
+This project is a **Kanban Board** built using **Vue.js** and **Tailwind CSS**. It provides a dynamic, interactive task management system 
 
 ## Features
 
@@ -33,7 +33,7 @@ npm install
 4. Run the project:
 
 ```bash
-npm run serve
+npm run dev 
 ```
 
 5. Open the application in the browser (usually at `http://localhost:8080`).
