@@ -22,9 +22,9 @@ const props = defineProps({
    // true = light, false = dark
 });
 
-function  changeTheme() {
-  props.onToggleTheme()
-}
+// function  changeTheme() {
+//   props.onToggleTheme()
+// }
 
 
 
@@ -139,7 +139,7 @@ function togglecol() {
 
       <!-- Mode -->
       <button
-        @click="changeTheme"
+        @click="props.onToggleTheme()"
         class="px-4 py-2 rounded-lg text-sm font-medium w-full sm:w-auto transition-colors duration-300"
         :class="
           props.theme
