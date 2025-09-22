@@ -6,8 +6,9 @@ import draggable from "vuedraggable";
 const props = defineProps({
   showAddColunm: Boolean,
   tasks: Array,
-  searchTerm: String, // from parent (MainBoard)
-  searchAssine: String, // from parent (MainBoard)
+  searchTerm: String,
+  searchAssine: String,
+  theme: Boolean, // 🔹 receive theme from parent
 });
 
 const emit = defineEmits(["openAddTask", "editTask", "delete", "deleteColumn"]);
@@ -17,46 +18,40 @@ const columns = ref([]);
 function getFilteredTasks(colId) {
   return props.tasks.filter((task) => {
     const matchesColumn = task.columnId === colId;
-
     const matchesAssignee = !props.searchAssine
       ? true
-      : task.assignee?.toLowerCase() === props.searchAssine.toLowerCase();
+      : task.Assignees.toLowerCase().includes(props.searchAssine.toLowerCase());
 
     const matchesSearch = !props.searchTerm
       ? true
       : task.title.toLowerCase().includes(props.searchTerm.toLowerCase());
 
-    return matchesColumn && matchesAssignee && matchesSearch;
+    return matchesColumn && matchesSearch && matchesAssignee;
   });
 }
 
 // 🔹 Handle drag end
 function onDragEnd(evt) {
   const { item, to } = evt;
-
-  // Find new column id (using data attribute)
   const newColId = to.closest("[data-col-id]")?.dataset.colId;
 
   if (newColId) {
-    // Find dragged task by data-task-id
     const taskId = item.getAttribute("data-task-id");
     const task = props.tasks.find((t) => t.id.toString() === taskId);
 
     if (task) {
-      task.columnId = newColId; // update columnId after drop
+      task.columnId = newColId;
     }
   }
-
-  // Save tasks state if you want persistence
   localStorage.setItem("kanban-tasks", JSON.stringify(props.tasks));
 }
 
+// 🔹 Load columns
 onMounted(() => {
   const saved = localStorage.getItem("kanban-col");
   if (saved) {
     columns.value = JSON.parse(saved);
 
-    // ensure default columns always exist
     const defaults = [
       { id: "todo", name: "Todo" },
       { id: "progress", name: "Progress" },
@@ -85,7 +80,7 @@ watch(
   { deep: true }
 );
 
-// receive new column
+// 🔹 Add column
 function addColumn(newColumn) {
   columns.value.push(newColumn);
 }
@@ -93,7 +88,7 @@ defineExpose({ addColumn });
 
 const notDeletecol = ["Todo", "Progress", "Done"];
 
-// delete column
+// 🔹 Delete column
 function deletecolum(column) {
   if (confirm(`Are you sure you want to delete column "${column.name}"?`)) {
     columns.value = columns.value.filter((c) => c.id !== column.id);
@@ -106,13 +101,22 @@ function deletecolum(column) {
     <div
       v-for="col in columns"
       :key="col.id"
-      class="w-60 h-auto border rounded-lg p-2 flex flex-col flex-shrink-0"
       :data-col-id="col.id"
+      class="w-60 h-auto rounded-lg p-2 flex flex-col flex-shrink-0 border"
+      :class="
+        props.theme
+          ? 'bg-gray-50 border-gray-300 text-gray-900'
+          : 'bg-gray-800 border-gray-600 text-gray-100'
+      "
     >
-      <div class="flex border w-full mb-2 pb-2 justify-start gap-4 items-center">
+      <!-- Column Header -->
+      <div
+        class="flex w-full mb-2 pb-2 justify-start gap-4 items-center border-b"
+        :class="props.theme ? 'border-gray-300' : 'border-gray-600'"
+      >
         <h1 class="font-bold ml-2">{{ col.name }}</h1>
         <div
-          class="w-6 h-6 rounded-full shadow-lg flex items-center justify-center bg-indigo-600"
+          class="w-6 h-6 rounded-full flex items-center justify-center bg-indigo-600 shadow"
         >
           <span class="text-white font-normal text-xs">
             {{ getFilteredTasks(col.id).length }}
@@ -128,7 +132,7 @@ function deletecolum(column) {
         </button>
       </div>
 
-      <!-- 🔹 Draggable Tasks -->
+      <!-- Tasks -->
       <draggable
         :list="getFilteredTasks(col.id)"
         :group="{ name: 'tasks', pull: true, put: true }"
@@ -140,12 +144,14 @@ function deletecolum(column) {
           <Task
             :task="element"
             :data-task-id="element.id"
+            :theme="props.theme"
             @openedit="emit('editTask', $event)"
             @deletetask="emit('delete', $event)"
           />
         </template>
       </draggable>
 
+      <!-- Add Task -->
       <button
         @click="emit('openAddTask', col.id)"
         class="mt-4 bg-indigo-600 text-white px-2 py-1 rounded text-sm hover:bg-indigo-700 w-auto"

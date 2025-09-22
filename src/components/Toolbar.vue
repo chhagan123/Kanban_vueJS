@@ -1,35 +1,54 @@
 <script setup>
-import { ref } from 'vue'
+import { ref } from "vue";
 
-const searchquery = ref("")
-const SearchQueryAssgnee = ref("")
+const searchquery = ref("");
+const SearchQueryAssgnee = ref("");
 
+const Assignees = ref(["chhagan", "Nandu", "Rishabh"]);
 
-const Assignees = ref(["chhagan", "Nandu", "Rishabh"])
+const emit = defineEmits([
+  "toggle",
+  "togglecol",
+  "search",
+  "assignee",
+  "theme",
+  "undo",
+   "redo"
+]);
 
-const emit = defineEmits(["toggle", "togglecol","search","assignee"])
+const props = defineProps({
+  theme: Boolean, // true = light, false = dark
+});
 
-// emit serchquery 
-function handlesearch () {
-  console.log(searchquery.value)
-  emit("search",searchquery.value)
+// toggle dark to light mode
+function changeTheme() {
+  emit("theme");
 }
-function searchAssignee () {
-  console.log(SearchQueryAssgnee.value)
-  emit("assignee",SearchQueryAssgnee.value)
+
+// emit search query
+function handlesearch() {
+  emit("search", searchquery.value);
+}
+function searchAssignee() {
+  emit("assignee", SearchQueryAssgnee.value);
 }
 
 function TogglAddTaskemit() {
-  emit("toggle")
+  emit("toggle");
 }
 function togglecol() {
-  emit("togglecol")
+  emit("togglecol");
 }
 </script>
 
 <template>
   <div
-    class="flex flex-col sm:flex-row justify-between items-center bg-gray-50  shadow rounded-lg px-4 py-3 w-full gap-3 sm:gap-6"
+    class="flex flex-col sm:flex-row justify-between items-center shadow rounded-lg px-4 py-3 w-full gap-3 sm:gap-6 transition-colors duration-300"
+    :class="
+      props.theme
+        ? 'bg-gray-50 text-gray-900'   /* Light */
+        : 'bg-gray-800 text-gray-100'  /* Dark */
+    "
   >
     <!-- Left Side: Search + Dropdown -->
     <div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto items-center">
@@ -38,22 +57,35 @@ function togglecol() {
         <input
           v-model="searchquery"
           @input="handlesearch"
-          class="pl-3 pr-8 py-2 border rounded-lg text-sm w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+          class="pl-3 pr-8 py-2 rounded-lg text-sm w-full focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-300"
+          :class="
+            props.theme
+              ? 'border border-gray-300 bg-white text-gray-900 placeholder-gray-500'
+              : 'border border-gray-600 bg-gray-700 text-gray-100 placeholder-gray-300'
+          "
           placeholder="Search by title..."
         />
-        <span class="absolute right-2 top-2 text-gray-500 text-sm">🔍</span>
+        <span
+          class="absolute right-2 top-2 text-sm"
+          :class="props.theme ? 'text-gray-500' : 'text-gray-300'"
+        >
+          🔍
+        </span>
       </div>
 
       <!-- Dropdown -->
       <select
         v-model="SearchQueryAssgnee"
-      
-        @change=" searchAssignee"
-        class="border rounded-lg px-2 py-2 text-sm w-full sm:w-auto focus:outline-none focus:ring-2 focus:ring-blue-500"
+        @change="searchAssignee"
+        class="rounded-lg px-2 py-2 text-sm w-full sm:w-auto focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-300"
+        :class="
+          props.theme
+            ? 'border border-gray-300 bg-white text-gray-900'
+            : 'border border-gray-600 bg-gray-700 text-gray-100'
+        "
       >
-        
         <option disabled value="">Search Assignee</option>
-        <option  v-for="person in Assignees" :key="person" :value="person">
+        <option v-for="person in Assignees" :key="person" :value="person">
           {{ person }}
         </option>
       </select>
@@ -66,30 +98,53 @@ function togglecol() {
       <!-- Add Column -->
       <button
         @click="togglecol"
-        class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 w-full sm:w-auto"
+        class="px-4 py-2 rounded-lg text-sm font-medium w-full sm:w-auto transition-colors duration-300"
+        :class="
+          props.theme
+            ? 'bg-blue-600 text-white hover:bg-blue-700'
+            : 'bg-blue-500 text-white hover:bg-blue-600'
+        "
       >
         ➕ Add Column
       </button>
 
       <!-- Undo -->
       <button
-        class="border px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-100 flex items-center gap-1 w-full sm:w-auto justify-center"
+        @click="emit('undo')"
+        class="px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-1 w-full sm:w-auto justify-center transition-colors duration-300"
+        :class="
+          props.theme
+            ? 'border border-gray-300 hover:bg-gray-100 text-gray-800'
+            : 'border border-gray-600 hover:bg-gray-700 text-gray-100'
+        "
       >
         ⟲ Undo
       </button>
 
       <!-- Redo -->
       <button
-        class="border px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-100 flex items-center gap-1 w-full sm:w-auto justify-center"
+      @click="emit('redo')"
+        class="px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-1 w-full sm:w-auto justify-center transition-colors duration-300"
+        :class="
+          props.theme
+            ? 'border border-gray-300 hover:bg-gray-100 text-gray-800'
+            : 'border border-gray-600 hover:bg-gray-700 text-gray-100'
+        "
       >
         ⟳ Redo
       </button>
 
       <!-- Mode -->
       <button
-        class="bg-yellow-400 text-black px-4 py-2 rounded-lg text-sm font-medium hover:bg-yellow-500 w-full sm:w-auto"
+        @click="changeTheme"
+        class="px-4 py-2 rounded-lg text-sm font-medium w-full sm:w-auto transition-colors duration-300"
+        :class="
+          props.theme
+            ? 'bg-yellow-400 text-black hover:bg-yellow-500'
+            : 'bg-gray-600 text-yellow-300 hover:bg-gray-500'
+        "
       >
-        ☀️
+        {{ props.theme ? '☀️' : '🌙' }}
       </button>
     </div>
   </div>
