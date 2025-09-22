@@ -17,13 +17,16 @@ const emit = defineEmits([
 ]);
 
 const props = defineProps({
-  theme: Boolean, // true = light, false = dark
+  theme: Boolean,
+  onToggleTheme:Function
+   // true = light, false = dark
 });
 
-// toggle dark to light mode
-function changeTheme() {
-  emit("theme");
+function  changeTheme() {
+  props.onToggleTheme()
 }
+
+
 
 // emit search query
 function handlesearch() {

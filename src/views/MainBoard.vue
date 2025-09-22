@@ -16,29 +16,7 @@ const searchAssine = ref("");
 // undo ref
 
 const history = ref([]);
-// const future = ref([])
-// const count = ref(0)
 
-// function handleundo(){
-//  const newval  =  tasks.value.pop()
-//  future.value.push(newval)
-//   count.value=0
-
-// }
-// console.log(future.value)
-// function handleRedo() {
-//   tasks.value.push(future.value[count.value])
-//   count.value++;
-
-// }
-
-//undo & redo
-
-// function updateTaskboard () {
-
-//   history.value =
-
-// }
 
 /// change theme by toggling
 const theme = ref(true);
@@ -150,6 +128,7 @@ function deleteTask(task) {
       @assignee="AssigneSearch"
       @theme="changeTheme"
       :theme="theme"
+      :onToggleTheme="changeTheme"
     />
 
     <Column
