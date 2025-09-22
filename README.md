@@ -1,3 +1,4 @@
+
 # Kanban Board Project
 
 ## Description
@@ -49,4 +50,3 @@ npm run dev
 ## Conclusion
 
 This Kanban Board project demonstrates **Vue.js skills**, **Tailwind CSS styling**, **state management with localStorage**, and **drag-and-drop interactivity**. It’s a fully functional, persistent task management system suitable for learning and practical usage.
-

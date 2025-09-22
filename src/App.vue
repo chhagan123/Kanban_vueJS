@@ -1,5 +1,5 @@
 <script setup>
-    import MainBoard from './components/MainBoard.vue';
+  import MainBoard from './views/MainBoard.vue';
 
     
  

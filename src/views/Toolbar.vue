@@ -13,7 +13,7 @@ const emit = defineEmits([
   "assignee",
   "theme",
   "undo",
-   "redo"
+  "redo",
 ]);
 
 const props = defineProps({
@@ -46,8 +46,8 @@ function togglecol() {
     class="flex flex-col sm:flex-row justify-between items-center shadow rounded-lg px-4 py-3 w-full gap-3 sm:gap-6 transition-colors duration-300"
     :class="
       props.theme
-        ? 'bg-gray-50 text-gray-900'   /* Light */
-        : 'bg-gray-800 text-gray-100'  /* Dark */
+        ? 'bg-gray-50 text-gray-900' /* Light */
+        : 'bg-gray-800 text-gray-100' /* Dark */
     "
   >
     <!-- Left Side: Search + Dropdown -->
@@ -123,7 +123,7 @@ function togglecol() {
 
       <!-- Redo -->
       <button
-      @click="emit('redo')"
+        @click="emit('redo')"
         class="px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-1 w-full sm:w-auto justify-center transition-colors duration-300"
         :class="
           props.theme
@@ -144,7 +144,7 @@ function togglecol() {
             : 'bg-gray-600 text-yellow-300 hover:bg-gray-500'
         "
       >
-        {{ props.theme ? '☀️' : '🌙' }}
+        {{ props.theme ? "☀️" : "🌙" }}
       </button>
     </div>
   </div>

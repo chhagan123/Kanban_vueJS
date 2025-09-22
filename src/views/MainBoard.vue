@@ -1,9 +1,9 @@
 <script setup>
 import Toolbar from "./Toolbar.vue";
-import AddTask from "../taskmodel/AddTask.vue";
-import Column from "../TaskBoard/Column.vue";
-import AddColum from "../taskmodel/AddColum.vue";
-import EditTask from "../taskmodel/EditTask.vue";
+import AddTask from "../components/taskmodel/AddTask.vue"
+import AddColum from "../components/taskmodel/AddColum.vue"
+import EditTask from  "../components/taskmodel/EditTask.vue"
+import Column from "../components/TaskBoard/Column.vue";
 import { onMounted, ref, watch } from "vue";
 
 const ShowTask = ref(false);
@@ -15,7 +15,7 @@ const searchAssine = ref("");
 
 // undo ref
 
-const history = ref([])
+const history = ref([]);
 // const future = ref([])
 // const count = ref(0)
 
@@ -23,26 +23,22 @@ const history = ref([])
 //  const newval  =  tasks.value.pop()
 //  future.value.push(newval)
 //   count.value=0
- 
+
 // }
 // console.log(future.value)
 // function handleRedo() {
 //   tasks.value.push(future.value[count.value])
 //   count.value++;
-  
+
 // }
 
-
-
-
-//undo & redo 
+//undo & redo
 
 // function updateTaskboard () {
-  
-//   history.value = 
+
+//   history.value =
 
 // }
-
 
 /// change theme by toggling
 const theme = ref(true);
@@ -146,14 +142,13 @@ function deleteTask(task) {
 </script>
 
 <template>
-  <div class="flex  flex-col justify-center items-center " >
+  <div class="flex flex-col justify-center items-center">
     <h1 class="mt-[4rem]">Welcome to Kanban Board</h1>
     <Toolbar
-    
       @togglecol="togglecol"
       @search="handlesearch"
       @assignee="AssigneSearch"
-      @theme = "changeTheme"
+      @theme="changeTheme"
       :theme="theme"
     />
 
