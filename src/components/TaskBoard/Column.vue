@@ -14,7 +14,7 @@ const props = defineProps({
 const emit = defineEmits(["openAddTask", "editTask", "delete", "deleteColumn"]);
 const columns = ref([]);
 
-// 🔹 Filter tasks per column
+
 function getFilteredTasks(colId) {
   return props.tasks.filter((task) => {
     const matchesColumn = task.columnId === colId;
@@ -30,7 +30,7 @@ function getFilteredTasks(colId) {
   });
 }
 
-// 🔹 Handle drag end
+
 function onDragEnd(evt) {
   const { item, to } = evt;
   const newColId = to.closest("[data-col-id]")?.dataset.colId;
@@ -46,7 +46,7 @@ function onDragEnd(evt) {
   localStorage.setItem("kanban-tasks", JSON.stringify(props.tasks));
 }
 
-// 🔹 Load columns
+
 onMounted(() => {
   const saved = localStorage.getItem("kanban-col");
   if (saved) {
